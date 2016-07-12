@@ -42,7 +42,6 @@ void BilinearLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   } else {
     kernel_count_ = conv_param.kernel_size(0) * conv_param.kernel_size(0);
   }
-
   im2col_propagate_down_.assign(1, true);
 }
 
@@ -90,6 +89,8 @@ void BilinearLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
   top_shape[3] = top_w;
   top[0]->Reshape(top_shape);
 }
+
+
 
 template <typename Dtype>
 void BilinearLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,

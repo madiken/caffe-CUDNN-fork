@@ -429,11 +429,46 @@ class BilinearLayer : public Layer<Dtype> {
   int num_patches_per_image_;
 
   vector<bool> im2col_propagate_down_;
+
 };
 
 
 
-// Forward declare PoolingLayer and SplitLayer for use in LRNLayer.
+template <typename Dtype>
+class BilinearV2Layer : public Layer<Dtype>{
+ public:
+  explicit BilinearV2Layer(const LayerParameter& param)
+      : Layer<Dtype>(param){}
+
+  virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top); 
+
+  virtual inline int ExactNumBottomBlobs() const { return 2; }
+  virtual inline int ExactNumTopBlobs() const { return 1; }
+  virtual inline const char* type() const { return "BilinearV2Layer"; }
+  
+  virtual inline bool AllowForceBackward(const int bottom_index) const {
+    return true;
+  }
+
+ protected:
+  virtual void Forward_cpu(const vector<Blob<Dtype>*>& bottom,
+      const vector<Blob<Dtype>*>& top);
+  virtual void Backward_cpu(const vector<Blob<Dtype>*>& top,
+      const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+  virtual void Forward_gpu(const vector<Blob<Dtype>*>& bottom,const vector<Blob<Dtype>*>& top);
+  virtual void Backward_gpu(const vector<Blob<Dtype>*>& top, const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
+
+  int poolingFieldsNum, num_h, num_w;
+  Blob<Dtype> dlda_buffer;
+  Blob<Dtype> dldb_buffer;
+  Blob<Dtype> masked_buffer1, masked_buffer2;
+  Blob<Dtype> mask_buffer;
+  Blob<Dtype> transposeBuffer, identityMatrix1, identityMatrix2;
+};
+
 template <typename Dtype> class PoolingLayer;
 template <typename Dtype> class SplitLayer;
 

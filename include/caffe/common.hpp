@@ -15,7 +15,7 @@
 #include <string>
 #include <utility>  // pair
 #include <vector>
-
+#include <iostream>
 #include "caffe/util/device_alternate.hpp"
 
 // gflags 2.1 issue: namespace google was changed to gflags without warning.
@@ -139,13 +139,17 @@ class Caffe {
 #endif
 
   // Returns the mode: running on CPU or GPU.
-  inline static Brew mode() { return Get().mode_; }
+  inline static Brew mode() {
+     
+      return Get().mode_; 
+
+   }
   // The setters for the variables
   // Sets the mode. It is recommended that you don't change the mode halfway
   // into the program since that may cause allocation of pinned memory being
   // freed in a non-pinned way, which may cause problems - I haven't verified
   // it personally but better to note it here in the header file.
-  inline static void set_mode(Brew mode) { Get().mode_ = mode; }
+  inline static void set_mode(Brew mode) {Get().mode_ = mode; }
   // Sets the random seed of both boost and curand
   static void set_random_seed(const unsigned int seed);
   // Sets the device. Since we have cublas and curand stuff, set device also
